@@ -37,6 +37,8 @@
 | ~06:15 | Added **GitHub Actions** firmware build (`.github/workflows/build.yml`) |
 | ~06:20 | With the user's approval: rewrote the personal gmail address on the 3 fork commits to the GitHub no-reply address and **force-pushed** `bluecave-ng`. New IDs: `d2a52749e2` (openssl), `9923cbafb5` (dropbear), `2bae6f2d09` (build hook). Contents unchanged |
 | ~06:22 | Added `CHANGELOG.md` (release notes against SWRT 5.2.9) |
+| ~06:30 | AiMesh: confirmed `AMAS=y` in the BLUECAVE flags and prebuilt `cfg_server`/`cfg_client`/`libcfgmnt.so` in the tree. Compatibility with the main router's 3.0.0.6 firmware has to be tested on the device |
+| ~06:40 | **Commit `323c076cdc`**: Blue Cave `openssl10-compat` (replaces Merlin's). Added `docs/FLASHING.md` |
 
 ## Changes made outside this repo
 

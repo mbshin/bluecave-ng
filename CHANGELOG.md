@@ -26,6 +26,10 @@ Firmware changes are in [mbshin/bluecave-asuswrt @ `bluecave-ng`](https://github
   - **The Blue Cave still builds with OpenSSL 1.0.2u by default.** 52 prebuilt ASUS/Lantiq binaries need OpenSSL 1.0, so 3.5 stays off until a compatibility layer exists. See [docs/OPENSSL-ABI.md](docs/OPENSSL-ABI.md).
   - Imported Merlin's `openssl10-compat` and `openssl11-compat` shims as a starting point, with CFLAGS adapted for gcc 4.8. **They won't be used as-is**, because they exit on uClibc. A Blue Cave-specific shim is planned.
 
+- **Blue Cave OpenSSL 1.0 compatibility shim** (`323c076cdc`, inactive until `OPENSSL35=y`)
+  - `libcrypto.so.1.0.0`/`libssl.so.1.0.0` linked to OpenSSL 3.5. Same-name symbols resolve from 3.5. The 36 removed symbols are implemented. A build-time check covers all 151 symbols the non-Wi-Fi blobs import.
+  - Replaces Merlin's shim, which exits on uClibc.
+
 ### Removed
 
 - Upstream **test/demo private keys** in OpenSSL 3.5 (`apps/*.pem`, `test/**`, `demos/**`) and dropbear's bundled libtomcrypt (`test*/*.key`), 285 files. The build doesn't use them, and GitHub push protection blocks them.

@@ -52,7 +52,9 @@ Progress:
 - [x] **dropbear 2019.78 → 2026.94** from Merlin, plus a ported `rc/ssh.c` (keys in /jffs/.ssh, ed25519, no DSS, multiple keys, forwarding opt-in, LAN-IP bind kept). Commit `9923cbafb` (pushed). Not build-tested yet.
 - [x] Prebuilt scan finished: **52 blobs on OpenSSL 1.0.0**, 308 imported symbols. The Merlin shim covers 43, 230 forward by name, 35 need implementations. See [OPENSSL-ABI.md](OPENSSL-ABI.md)
 - [x] Exact gap: 40 symbols missing from 3.5. Stack-context functions are used **only** by Lantiq hostapd/wpa_supplicant, which confirms the hybrid design.
-- [ ] Write the Blue Cave shim (`DT_NEEDED` on 3.5, implement the 40, no glibc-only env checks). Merlin's shim fatally exits on uClibc. See OPENSSL-ABI.md §3c
+- [x] Wrote the Blue Cave shim (`DT_NEEDED` on 3.5, 36 removed symbols implemented, `make check` against the 151 required symbols). Commit `323c076cdc` (pushed). **Not compiled yet.**
+- [ ] Private OpenSSL 1.0.2u for Lantiq hostapd/wpa_supplicant (rpath or wrapper)
+- [ ] Turn on `OPENSSL35=y` for BLUECAVE in a branch and get it to build in CI
 - [ ] Hybrid design: open source → 3.5, blobs → extended `openssl10-compat` shim, **Lantiq hostapd/wpa_supplicant → private OpenSSL 1.0.2u** (work items in OPENSSL-ABI.md §5)
 - [ ] Turn on `OPENSSL35=y` in the BLUECAVE flags (`src-lantiq/target.mak:464`) and fix the compile breakage (httpd, rc, openvpn, curl, wget, ...)
 
