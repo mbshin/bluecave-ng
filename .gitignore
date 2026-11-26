@@ -3,3 +3,4 @@ out/
 backup/
 private/
 .DS_Store
+firmware/

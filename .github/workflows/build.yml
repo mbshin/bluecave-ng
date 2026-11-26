@@ -71,6 +71,7 @@ jobs:
           docker run --rm --name bluecave-builder \
             -v "$PWD/src":/home/builder/src -v "$PWD/out":/out \
             -e TARGET bluecave-build bash -c '
+              set -eo pipefail
               cd src/release/src-lantiq
               make "$TARGET" 2>&1 | tee /out/build.log
               find . -maxdepth 3 -name "*.trx" -newer Makefile -exec cp -v {} /out/ \;'

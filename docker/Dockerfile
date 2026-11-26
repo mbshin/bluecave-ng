@@ -10,6 +10,7 @@ RUN dpkg --add-architecture i386 && apt-get update && apt-get install -y --no-in
       u-boot-tools device-tree-compiler python python3 gperf liblzo2-dev uuid-dev \
       lzma lzma-dev liblzma-dev binutils-dev patch cmake libglib2.0-dev gtk-doc-tools \
       pkg-config bc cpio rsync wget unzip file bzip2 xz-utils ca-certificates sudo vim-tiny \
+      libltdl-dev \
       libc6-i386 lib32stdc++6 lib32z1 libc6-dev-i386 libelf1:i386 libncurses5:i386 \
       zlib1g:i386 libstdc++6:i386 \
   && rm -rf /var/lib/apt/lists/*

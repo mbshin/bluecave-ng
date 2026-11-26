@@ -32,7 +32,7 @@ build() {
   if docker ps --format '{{.Names}}' | grep -qx bluecave-builder; then
     echo "a build is already running (container bluecave-builder); refusing to start another" >&2; exit 1; fi
   run --name bluecave-builder "$IMAGE" bash -c "
-    set -e; cd src/release/src-lantiq
+    set -eo pipefail; cd src/release/src-lantiq
     make bluecave 2>&1 | tee /out/build.log
     cp -v image/*.trx /out/ 2>/dev/null || find . -name '*.trx' -newer Makefile -exec cp -v {} /out/ \;"
 }
