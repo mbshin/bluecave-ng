@@ -11,6 +11,14 @@ There's **one Blue Cave and no spare**, so every flash goes to the real unit. Th
 - The real risk is the **device**, not the network. The protection is the NAND backup (done; copy it off the Mac), Rescue Mode and stock `.trx` restore, and, for anything beyond step 3, a **UART console** (3.3 V USB-TTL adapter, about $5).
 - Move its client (the smart speaker) to another node first, so nothing depends on it during testing.
 
+## Constraint: no configuration changes (2026-11-27)
+
+The user can't rewire or change the network: no cable, the Blue Cave stays a **wireless AiMesh node** and clients stay where they are. Consequences:
+
+- **Step 0 (official ASUS image)** goes through **AiMesh firmware update from the main router**, over the existing wireless backhaul. This is the standard ASUS path; settings are kept and the node rejoins automatically.
+- **Custom images (steps 1–4)** can't be pushed by AiMesh. They must be uploaded to the node directly (SSH or the node's own UI) over Wi-Fi, and after reboot the node must **rejoin the mesh wirelessly on its own**. If it doesn't, the only recovery is **physical**: reset button or Rescue Mode at the device.
+- **Open question:** physical access to the Blue Cave (power, reset button) for recovery. Without it, stop after step 0.
+
 ## What's safe to flash, and when
 
 | Image | Contents | Flash? |
