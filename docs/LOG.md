@@ -30,7 +30,8 @@
 | ~05:55 | Found that `release/src-lantiq/Makefile` is a **symlink** to `../src-rt/Makefile`, so the OPENSSL35 hook had been left out of the commit. Added commit `c20a93bf93` |
 | ~05:57 | **First push blocked by GitHub push protection**: OpenSSL/libtomcrypt **test and demo private keys** (`apps/*.pem`, `test/**`, `demos/**`, dropbear `libtomcrypt/test*/*.key`). They're public upstream test vectors, not real secrets. The push protection wasn't bypassed. Instead the 285 key files were removed from the 3 unpushed commits with `git filter-branch` in a bare clone (the macOS worktree couldn't be used because of case collisions). New IDs: `e3906ca1bb` (openssl), `8cefebda05` (dropbear), `c20a93bf93` (build hook) |
 | ~06:00 | **Pushed** `bluecave-ng` → <https://github.com/mbshin/bluecave-asuswrt/tree/bluecave-ng>. Local `src/` reset to it (the removed key files remain on disk as untracked files) |
-| ~06:01 | Project docs, scripts and docker committed to a **local-only** git repo in `~/projects/bluecave`, **not pushed**, because the docs contain private network details (DDNS hostname, admin user, LAN IPs and MACs, router serial) |
+| ~06:01 | Redacted private network details from the docs (moved to a gitignored `private/` folder). Added root `README.md`, `LICENSE` (GPL-2.0) and `.gitignore` |
+| ~06:05 | **Published** this repo publicly: <https://github.com/mbshin/bluecave-ng>. Commits use the GitHub no-reply e-mail |
 
 ## Changes made outside this repo
 
