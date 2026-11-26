@@ -53,6 +53,9 @@ Removed-symbol users: Lantiq `hostapd` 17, `wpa_supplicant` 20, `libasusnatnl` 1
 
 **Confirmed (2026-11-27):** only the Lantiq `hostapd` and `wpa_supplicant` (both ROM versions) import `EVP_MD_CTX_init`, `EVP_MD_CTX_cleanup`, `HMAC_CTX_init` and `HMAC_CTX_cleanup`. Those functions are only used with **caller-allocated (stack) contexts**, so the shim **cannot** serve these two binaries. They must use a real OpenSSL 1.0.2u. **No other blob imports these functions.** That's a good sign for the shim path, though a disassembly spot-check is still worth doing.
 
+**Security review follow-up (2026-11-27):** `X509_STORE_CTX` was public in 1.0 and could be stack-allocated before `X509_STORE_CTX_init`. Its only non-Wi-Fi importer, `libvpn.so`, also imports `X509_STORE_CTX_new` and `X509_STORE_CTX_free`, which is the heap pattern. No non-Wi-Fi blob imports `BN_init`, `BN_CTX_init`, `EVP_CIPHER_CTX_init`, `HMAC_Init` or `EVP_MD_CTX_init`. AiMesh `cfg_*`, `libamas-utils` and `bluetoothd` use `EVP_CIPHER_CTX_new` (heap).
+**Residual risk symbols can't show:** 1.0 header **macros that read struct fields directly** (for example `X509_get_notBefore/notAfter` → `x->cert_info->validity`, and `M_ASN1_*`). These compile to inline loads with no import. They have to be found by disassembly spot-checks or by **on-device testing with a UART console**.
+
 ## 3b. Exact gap: 40 symbols not exported by OpenSSL 3.5
 
 (308 imported − 268 that 3.5 exports by name.)

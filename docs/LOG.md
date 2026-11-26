@@ -39,6 +39,9 @@
 | ~06:22 | Added `CHANGELOG.md` (release notes against SWRT 5.2.9) |
 | ~06:30 | AiMesh: confirmed `AMAS=y` in the BLUECAVE flags and prebuilt `cfg_server`/`cfg_client`/`libcfgmnt.so` in the tree. Compatibility with the main router's 3.0.0.6 firmware has to be tested on the device |
 | ~06:40 | **Commit `323c076cdc`**: Blue Cave `openssl10-compat` (replaces Merlin's). Added `docs/FLASHING.md` |
+| ~06:45 | Security review of the shim: checked the `X509_STORE_CTX_init` stack-allocation risk. `libvpn` uses `_new`/`_free` (heap), so OK. Recorded the residual macro struct-access risk |
+| ~06:47 | Constraint from the user: **one Blue Cave, no spare or test environment.** Reframed FLASHING.md: the leaf node is its own test device; flash over a cable; UART needed before OpenSSL 3.5 |
+| ~06:48 | Hostapd/wpa_supplicant launch path found: `fapi_wlan_wave_lib_common.sh` does `cp -s ${BINDIR}/hostapd /tmp/hostapd_<radio>` (a symlink), then runs it. So a private-libs approach must work through symlinks (DT_RUNPATH on the binary, or a wrapper at `${BINDIR}/hostapd`) |
 
 ## Changes made outside this repo
 

@@ -2,6 +2,15 @@
 
 > Status 2026-11-27: **no build has been flashed yet.** Follow the order below. Don't skip steps.
 
+## Single-device reality
+
+There's **one Blue Cave and no spare**, so every flash goes to the real unit. That's acceptable because of its role:
+
+- It's a **leaf AiMesh node** serving ~1 client. The main router and the other nodes carry the network. If the Blue Cave goes down, **the network stays up**, so the Blue Cave is its own test device.
+- "Test network" just means **a cable**. Connect a Blue Cave LAN port to a spare LAN port on the main router (or any wired node) and flash over the cable. Don't flash while relying on its wireless backhaul.
+- The real risk is the **device**, not the network. The protection is the NAND backup (done; copy it off the Mac), Rescue Mode and stock `.trx` restore, and, for anything beyond step 3, a **UART console** (3.3 V USB-TTL adapter, about $5).
+- Move its client (the smart speaker) to another node first, so nothing depends on it during testing.
+
 ## What's safe to flash, and when
 
 | Image | Contents | Flash? |
@@ -9,12 +18,13 @@
 | SWRT R5.2.9 prebuilt (SourceForge) | Upstream SWRT, built by its maintainer | ✅ **First step.** It proves the flash and AiMesh path with a known-good image |
 | CI `master` build (`bluecave-<sha>.trx`) | Our build of the unmodified SWRT 5.2.9 | ✅ After the step above. It validates **our** toolchain and build |
 | CI `bluecave-ng` build, OpenSSL 1.0 default | SWRT + dropbear 2026.94 + new `rc/ssh.c` | ⚠️ After `master` works. Risk: SSH start-up. Boot, Wi-Fi and AiMesh are unchanged |
-| `bluecave-ng` with `OPENSSL35=y` | + OpenSSL 3.5, shim, private 1.0.2u for Wi-Fi | ❌ **Not yet.** Needs the hostapd/wpa_supplicant work and on-device testing of AiMesh, VPN and the web UI |
+| `bluecave-ng` with `OPENSSL35=y` | + OpenSSL 3.5, shim, private 1.0.2u for Wi-Fi | ❌ **Not yet**, and **only with a UART console connected**. Needs the hostapd/wpa_supplicant work. On-device testing of AiMesh, VPN and the web UI is the only way to catch 1.0 macro struct access in blobs |
 
 ## Before any flash
 
 - [x] Full NAND backup, including **`calibration`** (mtd4), with SHA256SUMS. Copy it **off the Mac**.
-- [ ] **Wired connection or isolated test network.** The Blue Cave is a *wireless* AiMesh node, and flashing or resetting drops the backhaul.
+- [ ] **Wired connection** to a spare LAN port on the main router or a wired node. The Blue Cave is a *wireless* AiMesh node, and flashing or resetting drops the backhaul.
+- [ ] Move its client(s) to another node.
 - [ ] Remove the node from AiMesh in the main router UI (or accept that you'll re-add it afterwards).
 - [ ] Optional but strongly recommended: **UART console** (3.3 V, `ttyLTQ0` 115200 8N1) so a failed boot can be recovered.
 - [ ] Know the recovery path. ASUS **Rescue Mode**: power off, hold Reset, power on and keep holding until the LED blinks slowly. Then use the ASUS Firmware Restoration utility or TFTP to `192.168.1.1` with stock `3.0.0.4.384.46630`. Test this **with the stock image first**, if possible.
