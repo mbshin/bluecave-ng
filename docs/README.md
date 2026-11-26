@@ -4,6 +4,7 @@ Custom, maintained firmware for the end-of-life **ASUS Blue Cave** (Intel GRX350
 
 | Doc | Contents |
 |---|---|
+| [HANDOFF.md](HANDOFF.md) | **Start here**: snapshot of state, constraints, next actions |
 | [RESEARCH.md](RESEARCH.md) | Hardware, ASUS EOL status, existing projects, constraints, sources |
 | [PLAN.md](PLAN.md) | Phased plan with progress checkboxes and next actions |
 | [BUILD.md](BUILD.md) | Docker build environment, toolchain, build log, incidents |

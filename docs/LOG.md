@@ -43,6 +43,11 @@
 | ~06:47 | Constraint from the user: **one Blue Cave, no spare or test environment.** Reframed FLASHING.md: the leaf node is its own test device; flash over a cable; UART needed before OpenSSL 3.5 |
 | ~06:48 | Hostapd/wpa_supplicant launch path found: `fapi_wlan_wave_lib_common.sh` does `cp -s ${BINDIR}/hostapd /tmp/hostapd_<radio>` (a symlink), then runs it. So a private-libs approach must work through symlinks (DT_RUNPATH on the binary, or a wrapper at `${BINDIR}/hostapd`) |
 
+| ~05:55 | Downloaded official ASUS `FW_BLUECAVE_300438446630.zip` (34.6 MB, from dlcdnets.asus.com, path read off the ASUS support page). Verified `.trx`: HDR0, XRX5, `BLUECAVE`, `384_46630-g3e43ad7` |
+| ~05:58 | **Step 0 attempt 1:** the user uploaded the `.trx` through EBG15 → Administration → Firmware Upgrade → BLUE CAVE → Upload. The node received 21.3/34.7 MB in `/tmp/linux.trx`, then discarded it. **No flash, no reboot.** The EBG15 web session had dropped (re-login at 05:59:11). The EBG15 log has no node-upgrade lines |
+| ~06:00 | CI runs 1 and 2 (master and bluecave-ng) **failed in setup**: ipset autoreconf needs `ltdl.m4` (`libltdl-dev`). The `make\|tee` pipe masked it. Fixed in `2edee50` and reran. Stopped the stale local build |
+| ~06:02 | Wrote `docs/HANDOFF.md` |
+
 ## Changes made outside this repo
 
 | Where | Change | How to undo |

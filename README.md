@@ -66,6 +66,7 @@ The backup includes `nvram.txt`, which has your Wi-Fi and admin passwords in pla
 
 | Doc | Contents |
 |---|---|
+| [docs/HANDOFF.md](docs/HANDOFF.md) | **Start here**: current state, constraints, next actions |
 | [docs/RESEARCH.md](docs/RESEARCH.md) | Hardware, ASUS EOL status, existing projects, constraints, sources |
 | [docs/PLAN.md](docs/PLAN.md) | Phased plan with progress checkboxes |
 | [docs/BUILD.md](docs/BUILD.md) | Build environment, toolchain, git notes, build log |
