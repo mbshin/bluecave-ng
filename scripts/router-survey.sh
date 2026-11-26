@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 # Read-only survey of the Blue Cave over SSH. Changes nothing on the router.
-# usage: scripts/router-survey.sh [user@]<main-router-ip> [port]
+# usage: scripts/router-survey.sh [user@]<bluecave-ip> [port]
 set -euo pipefail
 HOST=${1:?usage: $0 [user@]host [port]}; PORT=${2:-22}
 OUT="$(dirname "$0")/../backup/survey-$(date +%Y%m%d-%H%M%S).txt"
 mkdir -p "$(dirname "$OUT")"
-ssh -p "$PORT" -o ControlMaster=auto -o ControlPath=/tmp/bluecave-ssh-%r@%h:%p -o ControlPersist=120 -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedAlgorithms=+ssh-rsa "$HOST" '
+CM_DIR="${HOME}/.ssh/cm"; mkdir -p "$CM_DIR" && chmod 700 "$CM_DIR"   # user-only mux socket dir
+ssh -p "$PORT" -o ControlMaster=auto -o "ControlPath=$CM_DIR/%C" -o ControlPersist=120 -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedAlgorithms=+ssh-rsa "$HOST" '
   for c in "uname -a" "cat /proc/version" "cat /proc/cpuinfo" "cat /proc/meminfo" \
            "cat /proc/mtd" "cat /proc/partitions" "df -h" "mount" "lsmod" "ls /lib/modules/*/" \
            "nvram get firmver" "nvram get buildno" "nvram get extendno" "nvram get productid" \

@@ -41,7 +41,7 @@
 - [x] Remotes: `origin` (your fork), `swrt` (upstream SWRT), `merlin` (`RMerl/asuswrt-merlin.ng`, as a reference for cherry-picks only). Local clone in `src/`.
 - [x] Branches: `master` follows SWRT, `bluecave-ng` holds your changes. **Pushed 2026-11-27** (commits e3906ca1bb, 8cefebda05, c20a93bf93).
 - [x] Rule: never commit upstream test/demo private keys (GitHub push protection blocks them). Strip `*.pem`/`*.key` that contain private keys when importing packages.
-- [ ] CI: GitHub Actions on an x86_64 runner builds the `.trx` on every push and attaches it to releases. The tree is about 900 MB, so cache aggressively.
+- [x] CI: GitHub Actions workflow `build.yml` in this repo (manual dispatch with repo/ref/target, `.trx` + log artifacts). First run 2026-11-27.
 
 ## Phase 3: Security-critical package updates (highest value)
 
@@ -105,5 +105,5 @@ For each package: diff the SWRT version against the Merlin version, take Merlin'
 2. Finish the OpenSSL-linked binary scan (`out/openssl-linked.txt`). It decides whether the OpenSSL 3 migration is feasible.
 3. Copy `backup/` off this Mac.
 4. Phase 3 P0: OpenSSL 1.0.2u → 3.5, dropbear 2019.78 → 2026.94, dnsmasq 2.84 → 2.93.
-5. ~~Push `bluecave-ng`~~ (done). Set up CI.
+5. ~~Push `bluecave-ng`~~ (done). ~~Set up CI~~ (done: Actions).
 6. Before the first flash: give the Blue Cave a wired connection or test network, connect UART, test recovery.

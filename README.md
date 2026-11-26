@@ -33,7 +33,13 @@ ASUS stopped updating the Blue Cave in 2021 (last release `3.0.0.4.384.46630`). 
 - **Merlin NG is Broadcom-only**, so we take userspace and packages from it, not the platform.
 - **Toolchain:** gcc 4.8.3 (Linaro) with uClibc 0.9.33.2. It ships inside the source tree as 32-bit x86 binaries.
 
-## Quick start (build)
+## Build in GitHub Actions
+
+[![Build firmware](https://github.com/mbshin/bluecave-ng/actions/workflows/build.yml/badge.svg)](https://github.com/mbshin/bluecave-ng/actions/workflows/build.yml)
+
+Actions → **Build firmware** → *Run workflow* (or `gh workflow run build.yml -R mbshin/bluecave-ng -f ref=bluecave-ng`). The `.trx` is uploaded as an artifact. See [docs/BUILD.md](docs/BUILD.md#github-actions).
+
+## Quick start (local build)
 
 Requirements: Docker. About 15 GB of disk. On Apple Silicon the build runs under x86 emulation, which is slow.
 

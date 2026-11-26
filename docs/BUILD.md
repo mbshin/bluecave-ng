@@ -40,6 +40,16 @@ Environment overrides: `REPO=<git url>`, `BRANCH=<branch>` (default `master`).
 `scripts/build.sh build` runs the container under the fixed name **`bluecave-builder`** and refuses to start if one is already running. Two `make` processes on the same volume will corrupt the object tree.
 Note: `docker ps --filter ancestor=bluecave-build` **misses** containers started before the image was rebuilt (the tag has moved). Use the container name instead.
 
+## GitHub Actions
+
+`.github/workflows/build.yml` builds the firmware on a GitHub-hosted **x86-64** runner, so the toolchain runs natively with no emulation.
+
+- **Manual run:** Actions → *Build firmware* → *Run workflow*. Inputs: `repo` (default `mbshin/bluecave-asuswrt`), `ref` (default `bluecave-ng`), `target` (default `bluecave`). Or from the CLI: `gh workflow run build.yml -R mbshin/bluecave-ng -f ref=bluecave-ng`.
+- It also runs automatically when the workflow file or `docker/` changes on `main`.
+- **Outputs:** artifact `bluecave-<sha>` (`*.trx`) and `build-log-<sha>`. On failure, the job summary lists the error lines.
+- It frees about 30 GB on the runner first. The job timeout is 340 min (the GitHub limit is 360).
+- Inputs are format-checked and passed through `env:` (no `${{ }}` inside shell scripts).
+
 ## Why the source lives in a Docker volume
 
 macOS APFS is case-insensitive. The Linux 3.10 kernel tree has files whose names differ only by case (`xt_TCPMSS.h` / `xt_tcpmss.h`, 45 paths in total). A clone on macOS silently corrupts them, so **always build from the volume**. Never build from `src/`.

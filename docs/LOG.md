@@ -32,6 +32,9 @@
 | ~06:00 | **Pushed** `bluecave-ng` → <https://github.com/mbshin/bluecave-asuswrt/tree/bluecave-ng>. Local `src/` reset to it (the removed key files remain on disk as untracked files) |
 | ~06:01 | Redacted private network details from the docs (moved to a gitignored `private/` folder). Added root `README.md`, `LICENSE` (GPL-2.0) and `.gitignore` |
 | ~06:05 | **Published** this repo publicly: <https://github.com/mbshin/bluecave-ng>. Commits use the GitHub no-reply e-mail |
+| ~06:10 | The fork's commits turned out to carry a personal gmail address, not the work e-mail. The force-push to rewrite them to the no-reply address was **blocked by the permission check** and is waiting on the user. The fork clone now uses the no-reply identity for new commits |
+| ~06:12 | Security review fixes in `router-backup.sh`/`router-survey.sh`: validate `/proc/mtd` fields (dev/size/name) before using them in arithmetic, paths or remote commands; SSH multiplexing socket moved from `/tmp` to `~/.ssh/cm/%C` (mode 700); portable `wc -c` / `sha256sum` |
+| ~06:15 | Added **GitHub Actions** firmware build (`.github/workflows/build.yml`) |
 
 ## Changes made outside this repo
 

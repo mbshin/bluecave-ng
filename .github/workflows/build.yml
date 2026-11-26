@@ -1,0 +1,103 @@
+name: Build firmware
+
+on:
+  workflow_dispatch:
+    inputs:
+      repo:
+        description: Firmware source repository
+        default: mbshin/bluecave-asuswrt
+      ref:
+        description: Branch, tag or commit to build
+        default: bluecave-ng
+      target:
+        description: make target in release/src-lantiq
+        default: bluecave
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/build.yml
+      - docker/**
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-${{ github.ref }}-${{ inputs.ref || 'bluecave-ng' }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 340
+    env:
+      SRC_REPO: ${{ inputs.repo || 'mbshin/bluecave-asuswrt' }}
+      SRC_REF: ${{ inputs.ref || 'bluecave-ng' }}
+      TARGET: ${{ inputs.target || 'bluecave' }}
+    steps:
+      - name: Free disk space
+        run: |
+          df -h /
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL \
+                      /usr/local/share/boost /usr/local/.ghcup /usr/share/swift || true
+          sudo docker image prune --all --force || true
+          df -h /
+
+      - name: Validate inputs
+        run: |
+          [[ $SRC_REPO =~ ^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$ ]] || { echo "bad repo"; exit 1; }
+          [[ $SRC_REF =~ ^[A-Za-z0-9_./-]+$ && $SRC_REF != -* ]] || { echo "bad ref"; exit 1; }
+          [[ $TARGET =~ ^[A-Za-z0-9_-]+$ ]] || { echo "bad target"; exit 1; }
+
+      - uses: actions/checkout@v4
+
+      - name: Build image
+        run: docker build -t bluecave-build docker/
+
+      - name: Check out firmware source
+        run: |
+          git init -q src
+          git -C src remote add origin "https://github.com/${SRC_REPO}.git"
+          git -C src fetch -q --depth 1 origin "${SRC_REF}"
+          git -C src checkout -q FETCH_HEAD
+          echo "SRC_SHA=$(git -C src rev-parse --short=10 HEAD)" >> "$GITHUB_ENV"
+          git -C src log --oneline -1
+          # the container builds as uid 1000 (builder)
+          sudo chown -R 1000:1000 src
+          mkdir -p out && sudo chown 1000:1000 out
+
+      - name: Build (make ${{ env.TARGET }})
+        run: |
+          set -o pipefail
+          docker run --rm --name bluecave-builder \
+            -v "$PWD/src":/home/builder/src -v "$PWD/out":/out \
+            -e TARGET bluecave-build bash -c '
+              cd src/release/src-lantiq
+              make "$TARGET" 2>&1 | tee /out/build.log
+              find . -maxdepth 3 -name "*.trx" -newer Makefile -exec cp -v {} /out/ \;'
+          ls -la out
+
+      - name: Summarize errors
+        if: failure()
+        run: |
+          {
+            echo "### Build failed (${SRC_REPO}@${SRC_REF} ${SRC_SHA:-})"
+            echo '```'
+            grep -nE '(\*\*\*|Error [0-9]+|error:)' out/build.log | grep -v '(ignored)' | tail -40 || true
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload firmware
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bluecave-${{ env.SRC_SHA }}
+          path: out/*.trx
+          if-no-files-found: error
+
+      - name: Upload build log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log-${{ env.SRC_SHA || 'unknown' }}
+          path: out/build.log
+          if-no-files-found: ignore
