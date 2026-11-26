@@ -15,7 +15,8 @@ There's **one Blue Cave and no spare**, so every flash goes to the real unit. Th
 
 | Image | Contents | Flash? |
 |---|---|---|
-| SWRT R5.2.9 prebuilt (SourceForge) | Upstream SWRT, built by its maintainer | ✅ **First step.** It proves the flash and AiMesh path with a known-good image |
+| **ASUS official `3.0.0.4.384.46630`** | Final ASUS release (2021). The unit runs 384_32948 (2018) | ✅ **Step 0.** Nearly risk-free, real fixes, and a rehearsal of the cable, upload and AiMesh re-join procedure on the only unit. Also use it to rehearse **Rescue Mode** |
+| SWRT R5.2.9 prebuilt (SourceForge) | Upstream SWRT, built by its maintainer | ✅ **Step 1.** It proves the custom-firmware flash and AiMesh path with an image others already use |
 | CI `master` build (`bluecave-<sha>.trx`) | Our build of the unmodified SWRT 5.2.9 | ✅ After the step above. It validates **our** toolchain and build |
 | CI `bluecave-ng` build, OpenSSL 1.0 default | SWRT + dropbear 2026.94 + new `rc/ssh.c` | ⚠️ After `master` works. Risk: SSH start-up. Boot, Wi-Fi and AiMesh are unchanged |
 | `bluecave-ng` with `OPENSSL35=y` | + OpenSSL 3.5, shim, private 1.0.2u for Wi-Fi | ❌ **Not yet**, and **only with a UART console connected**. Needs the hostapd/wpa_supplicant work. On-device testing of AiMesh, VPN and the web UI is the only way to catch 1.0 macro struct access in blobs |
