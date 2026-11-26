@@ -72,6 +72,7 @@ The backup includes `nvram.txt`, which has your Wi-Fi and admin passwords in pla
 | [docs/PACKAGES.md](docs/PACKAGES.md) | Package versions SWRT vs Merlin, priorities |
 | [docs/OPENSSL-ABI.md](docs/OPENSSL-ABI.md) | OpenSSL 1.0 → 3.5 migration: prebuilt blob analysis and the hybrid design |
 | [docs/ROUTER.md](docs/ROUTER.md) | Survey results, NAND layout, SSH access in AiMesh, backup procedure |
+| [CHANGELOG.md](CHANGELOG.md) | Release notes: what changed against SWRT 5.2.9 |
 | [docs/LOG.md](docs/LOG.md) | Dated work log |
 
 ## Credits

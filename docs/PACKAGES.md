@@ -6,7 +6,7 @@ _Collected 2026-11-27. SWRT versions come from the local tree (`release/src/rout
 |---|---|---|---|---|
 | **OpenSSL** | **1.0.2u-fips (Dec 2019)** | **3.5.9** (Sep 2026). 1.1 and compat shims also in tree | EOL since 2019, many CVEs | **P0** |
 | **dnsmasq** | 2.84 | 2.93 | DNSpooq-era fixes are in 2.83+, later CVEs are not | **P0** |
-| **dropbear** | 2019.78 → **2026.94 (done, commit 8cefebda05)** | 2026.94 | Several CVEs, no ed25519, old ciphers | ~~P0~~ |
+| **dropbear** | 2019.78 → **2026.94 (done, commit 9923cbafb)** | 2026.94 | Several CVEs, no ed25519, old ciphers | ~~P0~~ |
 | **curl** | 7.67.0 | 8.17.0 | Dozens of CVEs | **P1** |
 | **miniupnpd** | 1.9 | 2.3.11 (plus `miniupnpd-igdv2`) | Exposed on the LAN, CVEs | **P1** |
 | openvpn | 2.4.7 | newer 2.x (exact version to verify) | CVEs. Needs OpenSSL 1.1+ or 3 | P1 |
