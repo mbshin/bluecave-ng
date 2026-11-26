@@ -1,0 +1,5 @@
+src/
+out/
+backup/
+private/
+.DS_Store
