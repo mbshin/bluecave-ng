@@ -49,3 +49,22 @@ The user can't rewire or change the network: no cable, the Blue Cave stays a **w
 ## A/B banks
 
 The NAND has kernelA/rootfsA and kernelB/rootfsB (`active_bank=A` at survey time). The ASUS/SWRT updater's behaviour (does it write the inactive bank and switch?) is **still unknown**. Until it's confirmed, don't rely on automatic fallback.
+
+## Upgrade path and bank fallback (read from source and device, 2026-11-27)
+
+**Upgrade chain** (stock firmware and SWRT alike): `cfg_client` or httpd writes `/tmp/linux.trx` → rc service `restart_upgrade` → `update_trx()` (`shared/sysdeps/lantiq/private.c`) cuts out the `XRX500 Fullimage` → `/usr/sbin/upgrade /tmp/fullimage.img fullimage 0 1` (Lantiq, closed source) → `vol_mgmt upgrade_dualvol_stdin` writes kernel/rootfs of the **inactive** bank, then sets `active_bank` and `update_chk` (0 = A, 2 = B). Then rc reboots.
+- `update_trx()` does **not** check the CRC. Check it before uploading (our pre-flight does).
+
+**U-Boot bank selection** (env in `ubootconfigA/B`, redundant copies): `ubi_init` runs `check_image$(update_chk)`:
+
+| `update_chk` | Boots | Then |
+|---|---|---|
+| 0 | A | stays A |
+| 1 | B | saves `update_chk=0` → **next boot A** (one-shot trial of B) |
+| 2 | B | stays B |
+| 3 | A | saves `update_chk=2` → **next boot B** (one-shot trial of A) |
+
+- There is **no automatic fallback** (no bootcount). The normal upgrade sets 0 or 2, which is a permanent switch.
+- Nothing in userspace touches `update_chk` except `vol_mgmt` during an upgrade. So a trial stays a trial until it's committed by hand (`uboot_env --set --name update_chk --value 0|2`).
+- **Trial-boot recipe for custom images:** run `upgrade` by hand (no reboot), then set `update_chk` to the trial value for the new bank (3 if the new bank is A, 1 if it's B), verify it, and reboot. If the new image hangs or loses the backhaul, **one power cycle boots the previous official bank**. If it works, commit over SSH.
+- State on 2026-11-27: bank B = official 384_46630 (active, `update_chk=2`), bank A = official 384_32948 (known to boot; both kernels have valid uImage headers). **Rehearse the trial boot with these two official images before any custom flash.** This is unverified until rehearsed.
