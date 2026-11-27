@@ -53,7 +53,7 @@ Snapshot for whoever picks this up next (human or agent). Read this first, then 
 ## Gotchas learned the hard way
 
 - The extracted official `.trx` had disappeared from `firmware/asus-384.46630/` (only the zip was left). It was re-extracted, with the sha256 checked against the recorded value. **Always re-check the hash before an upload.**
-- The EBG15 LAN UI (`192.168.51.1:8443`) has a self-signed certificate. Use the DDNS URL in Chrome.
+- The EBG15 LAN UI (`<main-router-ip>:8443`) has a self-signed certificate. Use the DDNS URL in Chrome.
 
 - The fork clone `src/` now has a repo-local `user.email` (GitHub no-reply). The global `~/.gitconfig` is the personal gmail, so **check `git config user.email` in any new clone** before committing.
 - Pushing from a scratch HTTPS clone hangs waiting for credentials. Push through `src/` (SSH remote): `git fetch <bare> <branch>` then `git push --force-with-lease=... origin FETCH_HEAD:refs/heads/<branch>`.
