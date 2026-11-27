@@ -1,12 +1,11 @@
-# Handoff — 2026-11-27 18:00 KST
+# Handoff — 2026-11-27 18:15 KST
 
 Snapshot for whoever picks this up next (human or agent). Read this first, then [PLAN.md](PLAN.md) and [LOG.md](LOG.md).
 
 ## TL;DR
 
-- **Device:** one ASUS Blue Cave, a **wireless leaf AiMesh node** under an ExpertWiFi EBG15. **Healthy and unchanged**: stock `3.0.0.4.384_32948-g8ec6a66` (2018), up 6 days, in the mesh. **Nothing has been flashed.**
-- **Step 0** (official ASUS `384.46630` through the main router's AiMesh *Manual firmware update → Upload*) was **attempted and didn't apply**. The image started arriving on the node (`/tmp/linux.trx` reached 21.3 of 34.7 MB at 05:58), then was discarded. No flash, no reboot. **Likely cause:** the main router's web session dropped mid-transfer (new login at 05:59:11). Not proven. The EBG15 log has no node-upgrade entries. Node flags afterwards: `upgrade_fw_status=4`, `webs_state_error=1` (meaning unknown).
-- **Step 0 attempt 2** is ready. The node was checked at 17:44 (clean, 367 MB free) and a watcher logs to `out/step0-attempt2-174457.log`. **As of 17:53 nothing had been uploaded.**
+- **Device:** one ASUS Blue Cave, a **wireless leaf AiMesh node** under an ExpertWiFi EBG15. **Now on official ASUS `3.0.0.4.384_46630-g3e43ad7`** (step 0 done 2026-11-27 18:10), back in the mesh. No custom image has been flashed.
+- **Step 0 done** (attempt 2). Uploaded through EBG15 → Administration → Firmware Upgrade → BLUE CAVE → Upload, with the page kept open. The node received all 34,717,696 B at 18:09:49, shut down its services, rebooted at 18:10:37 and was back on `384_46630` at 18:13 (`re_mode=1`, `wlc_state=2` on both radios, same IP, AiMesh daemons running). Attempt 1 at 05:58 had stalled at 21.3 MB, most likely because the EBG15 session dropped. Log: `out/step0-attempt2b-*.log`.
 - **Firmware source:** `mbshin/bluecave-asuswrt@bluecave-ng` (head `10681c21c6`) has dropbear 2026.94, OpenSSL 3.5 (off) and the Blue Cave OpenSSL 1.0 shim.
 - **CI:** the unchanged SWRT 5.2.9 `master` **builds green** (run `45895088817`, artifact `bluecave-993adeb230`). `bluecave-ng` failed at the dropbear link (ASUS hooks missing from SWRT). Fixed in `10681c21c6`. **Run `45966381209` is green** (built from the pre-rewrite ID `f543003ea0`, same tree): `3.0.0.4_BLUECAVE_R5.2.9_30001-gf543003.trx`, 36.3 MB, HDR0/XRX500/BLUECAVE, sha256 `3516d6d8…c58802`, in `out/ci/45966381209/`. **Not flashed. Do step 0 first.**
 
@@ -14,7 +13,7 @@ Snapshot for whoever picks this up next (human or agent). Read this first, then 
 
 | Workstream | State | Next action |
 |---|---|---|
-| Step 0: official ASUS 384.46630 on the node | ❌ Attempt 1 didn't apply. ⏳ Attempt 2 waiting for the user's upload | Retry the AiMesh upload and **keep the main router page open and logged in until the node reboots** (~10 min). Watch `/tmp/linux.trx` on the node over SSH. Fallback (needs user OK): flash on the node over SSH with the same verified `.trx` |
+| Step 0: official ASUS 384.46630 on the node | ✅ Done 18:10 (attempt 2) | Let it run a day; then step 1 = CI image `R5.2.9_30001-gf543003` flashed **directly on the node** (custom images can't go through AiMesh). Needs user OK |
 | CI firmware build | ✅ Baseline `master` green. ✅ `bluecave-ng` green (run `45966381209`, after the dropbear link fix `10681c21c6`) | Check `gh run list -R mbshin/bluecave-ng`. If red, `gh run download` the build log and grep `] Error` without `ignored` |
 | Local Mac build | ⏹ Stopped (it used the old image without libltdl, so it would fail) | Optional: `scripts/build.sh image && scripts/build.sh build` (slow under emulation; CI is preferred) |
 | dropbear 2026.94 + `rc/ssh.c` | ✅ Committed `9923cbafb5`, link fix `10681c21c6`, **builds** | Flash test after step 0 (SSH start-up is the risk) |
@@ -53,6 +52,9 @@ Snapshot for whoever picks this up next (human or agent). Read this first, then 
 
 ## Gotchas learned the hard way
 
+- The extracted official `.trx` had disappeared from `firmware/asus-384.46630/` (only the zip was left). It was re-extracted, with the sha256 checked against the recorded value. **Always re-check the hash before an upload.**
+- The EBG15 LAN UI (`192.168.51.1:8443`) has a self-signed certificate. Use the DDNS URL in Chrome.
+
 - The fork clone `src/` now has a repo-local `user.email` (GitHub no-reply). The global `~/.gitconfig` is the personal gmail, so **check `git config user.email` in any new clone** before committing.
 - Pushing from a scratch HTTPS clone hangs waiting for credentials. Push through `src/` (SSH remote): `git fetch <bare> <branch>` then `git push --force-with-lease=... origin FETCH_HEAD:refs/heads/<branch>`.
 - Merlin packages may call ASUS functions that SWRT 5.2.9 lacks (`IS_PTCSRV_LOCKED`, `asus_openssl_crypt`). Gate them, don't stub them.
@@ -68,7 +70,7 @@ Snapshot for whoever picks this up next (human or agent). Read this first, then 
 ## Open questions for the user
 
 1. ~~Physical access~~: yes. ~~Step 0 method~~: retry the AiMesh upload (chosen 2026-11-27).
-2. Upload the `.trx` in the EBG15 UI for attempt 2, and keep the page open.
+2. OK to flash the CI `bluecave-ng` image on the node (step 1), and when?
 3. Copy `backup/` off the Mac (USB or trusted cloud).
 4. Optional: buy a 3.3 V USB-UART adapter before any OpenSSL 3.5 image.
 5. Later: turn off SSH on the main router and remove the key when done. Consider turning off *Web Access from WAN* (see `private/NETWORK.md`).

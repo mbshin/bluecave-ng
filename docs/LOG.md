@@ -54,6 +54,9 @@
 | 17:45–18:05 | Rewrote the two commits in a bare clone (trees identical): `323c076cdc`→`9bdc2e04ee`, `f543003ea0`→`10681c21c6`. The HTTPS push from the scratch clone hung for about 20 minutes waiting for credentials. Killed it and **force-pushed through `src/`'s SSH remote** with `--force-with-lease`. `bluecave-ng` = `10681c21c6` |
 | 17:53 | Step 0 attempt 2: no upload had reached the node yet |
 | 17:56 | **CI run `45966381209` green**: first `bluecave-ng` firmware (dropbear 2026.94, OpenSSL 1.0 default). `3.0.0.4_BLUECAVE_R5.2.9_30001-gf543003.trx` 36,294,656 B, HDR0/XRX500/BLUECAVE, sha256 `3516d6d8394d3463999466a0101c230c0a902d9af1e7d36a5ae487ade5c58802`. Saved to `out/ci/45966381209/` |
+| 18:05 | The extracted official `.trx` was missing from disk. Re-extracted it from the verified zip; the sha256 `c6a523ef…168f9a` matches |
+| 18:09 | **Step 0 attempt 2:** the user uploaded the `.trx` through EBG15 → Firmware Upgrade → BLUE CAVE → Upload. The node received **34,717,696 / 34,717,696 B** at 18:09:49 (`upgrade_fw_status` 4→0→2), stopped its services at 18:09:51–54 |
+| 18:10–18:13 | Node rebooted at 18:10:37 and answered SSH at 18:13. **Now `384_46630-g3e43ad7`**, still an AiMesh node (`sw_mode=3`, `re_mode=1`), `wlc_state=2`/`wlc1_state=2`, same IP, 369 MB free. **Step 0 done** |
 
 ## Changes made outside this repo
 

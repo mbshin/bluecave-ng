@@ -23,7 +23,7 @@ The user can't rewire or change the network: no cable, the Blue Cave stays a **w
 
 | Image | Contents | Flash? |
 |---|---|---|
-| **ASUS official `3.0.0.4.384.46630`** | Final ASUS release (2021). The unit runs 384_32948 (2018) | ✅ **Step 0.** Nearly risk-free, real fixes, and a rehearsal of the cable, upload and AiMesh re-join procedure on the only unit. Also use it to rehearse **Rescue Mode** |
+| **ASUS official `3.0.0.4.384.46630`** | Final ASUS release (2021). The unit runs 384_32948 (2018) | ✅ **Step 0, done 2026-11-27** (AiMesh upload, about 3.5 minutes from upload to back online). Nearly risk-free, real fixes, and a rehearsal of the cable, upload and AiMesh re-join procedure on the only unit. Also use it to rehearse **Rescue Mode** |
 | SWRT R5.2.9 prebuilt (SourceForge) | Upstream SWRT, built by its maintainer | ✅ **Step 1.** It proves the custom-firmware flash and AiMesh path with an image others already use |
 | CI `master` build (`bluecave-<sha>.trx`) | Our build of the unmodified SWRT 5.2.9 | ✅ After the step above. It validates **our** toolchain and build |
 | CI `bluecave-ng` build, OpenSSL 1.0 default | SWRT + dropbear 2026.94 + new `rc/ssh.c` | ⚠️ After `master` works. Risk: SSH start-up. Boot, Wi-Fi and AiMesh are unchanged |
