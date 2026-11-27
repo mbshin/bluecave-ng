@@ -49,10 +49,10 @@ See [PACKAGES.md](PACKAGES.md) for the version gap table (inventory done 2026-11
 
 Progress:
 - [x] OpenSSL 3.5.9 + `openssl10-compat`/`openssl11-compat` imported from Merlin and wired into the build (`RTCONFIG_OPENSSL35`, `OPENSSL35=y`). Commits `d2a52749e` + `2bae6f2d0` on `bluecave-ng` (pushed). **Not turned on for BLUECAVE yet.**
-- [x] **dropbear 2019.78 → 2026.94** from Merlin, plus a ported `rc/ssh.c` (keys in /jffs/.ssh, ed25519, no DSS, multiple keys, forwarding opt-in, LAN-IP bind kept). Commit `9923cbafb` (pushed). Not build-tested yet.
+- [x] **dropbear 2019.78 → 2026.94** from Merlin, plus a ported `rc/ssh.c` (keys in /jffs/.ssh, ed25519, no DSS, multiple keys, forwarding opt-in, LAN-IP bind kept). Commit `9923cbafb`, link fix `10681c21c6` (ASUS hooks missing from SWRT gated). Not build-tested yet.
 - [x] Prebuilt scan finished: **52 blobs on OpenSSL 1.0.0**, 308 imported symbols. The Merlin shim covers 43, 230 forward by name, 35 need implementations. See [OPENSSL-ABI.md](OPENSSL-ABI.md)
 - [x] Exact gap: 40 symbols missing from 3.5. Stack-context functions are used **only** by Lantiq hostapd/wpa_supplicant, which confirms the hybrid design.
-- [x] Wrote the Blue Cave shim (`DT_NEEDED` on 3.5, 36 removed symbols implemented, `make check` against the 151 required symbols). Commit `323c076cdc` (pushed). **Not compiled yet.**
+- [x] Wrote the Blue Cave shim (`DT_NEEDED` on 3.5, 36 removed symbols implemented, `make check` against the 151 required symbols). Commit `9bdc2e04ee` (pushed; was `323c076cdc` before the e-mail rewrite). **Not compiled yet.**
 - [ ] Private OpenSSL 1.0.2u for Lantiq hostapd/wpa_supplicant (rpath or wrapper)
 - [ ] Turn on `OPENSSL35=y` for BLUECAVE in a branch and get it to build in CI
 - [ ] Hybrid design: open source → 3.5, blobs → extended `openssl10-compat` shim, **Lantiq hostapd/wpa_supplicant → private OpenSSL 1.0.2u** (work items in OPENSSL-ABI.md §5)

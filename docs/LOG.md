@@ -47,6 +47,12 @@
 | ~05:58 | **Step 0 attempt 1:** the user uploaded the `.trx` through EBG15 → Administration → Firmware Upgrade → BLUE CAVE → Upload. The node received 21.3/34.7 MB in `/tmp/linux.trx`, then discarded it. **No flash, no reboot.** The EBG15 web session had dropped (re-login at 05:59:11). The EBG15 log has no node-upgrade lines |
 | ~06:00 | CI runs 1 and 2 (master and bluecave-ng) **failed in setup**: ipset autoreconf needs `ltdl.m4` (`libltdl-dev`). The `make\|tee` pipe masked it. Fixed in `2edee50` and reran. Stopped the stale local build |
 | ~06:02 | Wrote `docs/HANDOFF.md` |
+| 17:30 | CI reruns after the libltdl fix: **fork `master` (SWRT 5.2.9 baseline) builds green** (run `45895088817`, artifact `bluecave-993adeb230`). `bluecave-ng` failed at the dropbearmulti link: `IS_PTCSRV_LOCKED` (newer libptcsrv) and `asus_openssl_crypt` (newer libshared) aren't in SWRT 5.2.9 |
+| 17:31 | **Commit `f543003ea0`** on `bluecave-ng`: gated both hooks behind `HAVE_PTCSRV_LOCKED` / `HAVE_ASUS_OPENSSL_CRYPT` (undefined), which matches the old 2019.78 behaviour (SWRT writes `$1$` hashes). Pushed, and CI run `45966381209` started |
+| 17:32 | Found the fork clone had **no local `user.email`**, so `323c076cdc` and `f543003ea0` were pushed with the personal gmail address (the earlier note that it had been switched was wrong). Set the repo-local no-reply address. Rewriting the two commits needs a force-push, which the user approved |
+| 17:44 | User decisions: **force-push OK**, **retry step 0 through the AiMesh upload**, **physical access to the Blue Cave: yes**. Node pre-check: still 384_32948, no `/tmp/linux.trx`, 367 MB free RAM, `upgrade_fw_status=4`, `webs_state_error=1`. Started a watcher (`out/step0-attempt2-174457.log`) |
+| 17:45–18:05 | Rewrote the two commits in a bare clone (trees identical): `323c076cdc`→`9bdc2e04ee`, `f543003ea0`→`10681c21c6`. The HTTPS push from the scratch clone hung for about 20 minutes waiting for credentials. Killed it and **force-pushed through `src/`'s SSH remote** with `--force-with-lease`. `bluecave-ng` = `10681c21c6` |
+| 17:53 | Step 0 attempt 2: no upload had reached the node yet |
 
 ## Changes made outside this repo
 

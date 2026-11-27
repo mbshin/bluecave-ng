@@ -12,6 +12,7 @@ Firmware changes are in [mbshin/bluecave-asuswrt @ `bluecave-ng`](https://github
   - Seven years of upstream fixes, including CVE fixes in key exchange, scp and channel handling.
   - Taken from Asuswrt-Merlin with Merlin's `localoptions.h`: 3 auth tries, per-IP unauthenticated connection limits, SFTP via Entware's `/opt/libexec/sftp-server`.
   - Build rule now links `libnvram`/`libshared` (Merlin patches) and uses `-O2` and `IGNORE_SPEED=1`.
+  - Merlin's `IS_PTCSRV_LOCKED` pre-check and `asus_openssl_crypt` fallback are gated off (`10681c21c6`). SWRT 5.2.9's libptcsrv and libshared don't have them. Behaviour matches the previous 2019.78 build.
 - **SSH service (`rc/ssh.c`) rework** (`9923cbafb5`)
   - Host keys are **kept in `/jffs/.ssh/`** (they survive reboots and upgrades) instead of nvram.
   - **ed25519** host key added. **DSS removed**, because modern dropbear no longer supports it.
@@ -26,7 +27,7 @@ Firmware changes are in [mbshin/bluecave-asuswrt @ `bluecave-ng`](https://github
   - **The Blue Cave still builds with OpenSSL 1.0.2u by default.** 52 prebuilt ASUS/Lantiq binaries need OpenSSL 1.0, so 3.5 stays off until a compatibility layer exists. See [docs/OPENSSL-ABI.md](docs/OPENSSL-ABI.md).
   - Imported Merlin's `openssl10-compat` and `openssl11-compat` shims as a starting point, with CFLAGS adapted for gcc 4.8. **They won't be used as-is**, because they exit on uClibc. A Blue Cave-specific shim is planned.
 
-- **Blue Cave OpenSSL 1.0 compatibility shim** (`323c076cdc`, inactive until `OPENSSL35=y`)
+- **Blue Cave OpenSSL 1.0 compatibility shim** (`9bdc2e04ee`, inactive until `OPENSSL35=y`)
   - `libcrypto.so.1.0.0`/`libssl.so.1.0.0` linked to OpenSSL 3.5. Same-name symbols resolve from 3.5. The 36 removed symbols are implemented. A build-time check covers all 151 symbols the non-Wi-Fi blobs import.
   - Replaces Merlin's shim, which exits on uClibc.
 
