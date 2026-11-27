@@ -57,6 +57,11 @@
 | 18:05 | The extracted official `.trx` was missing from disk. Re-extracted it from the verified zip; the sha256 `c6a523ef…168f9a` matches |
 | 18:09 | **Step 0 attempt 2:** the user uploaded the `.trx` through EBG15 → Firmware Upgrade → BLUE CAVE → Upload. The node received **34,717,696 / 34,717,696 B** at 18:09:49 (`upgrade_fw_status` 4→0→2), stopped its services at 18:09:51–54 |
 | 18:10–18:13 | Node rebooted at 18:10:37 and answered SSH at 18:13. **Now `384_46630-g3e43ad7`**, still an AiMesh node (`sw_mode=3`, `re_mode=1`), `wlc_state=2`/`wlc1_state=2`, same IP, 369 MB free. **Step 0 done** |
+| 18:22–18:31 | The Mac had moved to another network (192.168.0.x); nothing was done until it was back on the LAN |
+| 18:32 | Step 1 pre-flight: node on bank B (`active_bank=B`, `update_chk=2`). The upgrade writes bank A; rootfsA has 282 LEBs and the CI rootfs needs 264; 149 LEBs free; same kernel (3.10.104, 2.75 MB). Both trx have valid CRCs and the same layout. Stock trigger: `cfg_client` → `/tmp/linux.trx` + `restart_upgrade`. Saved nvram to `backup/nvram-384_46630-20261127-183241.txt` |
+| 18:40 | Explained to the user that the custom firmware isn't finished (OpenSSL 3.5 off), and recommended not flashing yet |
+| 18:45 | **Independent review by Codex** (read-only, isolated bundle, no private data): don't flash yet. See [REVIEW-STEP1.md](REVIEW-STEP1.md). Redacted the LAN IP I had added to HANDOFF.md (`5fa2a70`; still in earlier commits of the public history) |
+| 18:50 | **Commit `f7b396110d`** (`rc/ssh.c`): an invalid port falls back to 22 rather than turning SSH off; nvram RSA/ECDSA host keys are migrated (chmod 0600); key generation and symlink results are checked, with a fallback to RAM; fixed `f_size()==-1` being treated as present. CI run `45975183625` |
 
 ## Changes made outside this repo
 

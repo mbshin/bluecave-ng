@@ -23,6 +23,7 @@ Custom, maintained firmware for the end-of-life **ASUS Blue Cave** (Intel GRX350
 | Baseline build (SWRT 5.2.9) | **Running**: kernel compile stage |
 | Router access | SSH LAN-only on the EBG15, key login `~/.ssh/bluecave_rsa` to the Blue Cave `<bluecave-ip>` |
 | Survey and NAND backup | **Done**: `backup/` (copy it off this Mac) |
+| Step 1 review | [REVIEW-STEP1.md](REVIEW-STEP1.md): Codex says don't flash yet; SSH fixes in `f7b396110d` |
 | Package inventory | Done. P0: OpenSSL 1.0.2u → 3.5, dropbear 2019.78 → 2026.94, dnsmasq 2.84 → 2.93 |
 | Project docs/scripts | **Public**: <https://github.com/mbshin/bluecave-ng> (private details redacted) |
 | OpenSSL-linked prebuilt scan | **Done**: 52 blobs on 1.0.0 (incl. Wi-Fi hostapd/wpa_supplicant, AiMesh cfg_*), 308 symbols. See OPENSSL-ABI.md |

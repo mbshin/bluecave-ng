@@ -13,10 +13,10 @@ Snapshot for whoever picks this up next (human or agent). Read this first, then 
 
 | Workstream | State | Next action |
 |---|---|---|
-| Step 0: official ASUS 384.46630 on the node | ✅ Done 18:10 (attempt 2) | Let it run a day; then step 1 = CI image `R5.2.9_30001-gf543003` flashed **directly on the node** (custom images can't go through AiMesh). Needs user OK |
+| Step 0: official ASUS 384.46630 on the node | ✅ Done 18:10 (attempt 2). Step 1 **on hold** | Independent review said don't flash yet: see [REVIEW-STEP1.md](REVIEW-STEP1.md) for the conditions. Pre-flight done: node on bank B, bank A is the target, rootfs fits (264/282 LEBs) |
 | CI firmware build | ✅ Baseline `master` green. ✅ `bluecave-ng` green (run `45966381209`, after the dropbear link fix `10681c21c6`) | Check `gh run list -R mbshin/bluecave-ng`. If red, `gh run download` the build log and grep `] Error` without `ignored` |
 | Local Mac build | ⏹ Stopped (it used the old image without libltdl, so it would fail) | Optional: `scripts/build.sh image && scripts/build.sh build` (slow under emulation; CI is preferred) |
-| dropbear 2026.94 + `rc/ssh.c` | ✅ Committed `9923cbafb5`, link fix `10681c21c6`, **builds** | Flash test after step 0 (SSH start-up is the risk) |
+| dropbear 2026.94 + `rc/ssh.c` | ✅ Committed `9923cbafb5`, link fix `10681c21c6`, review fixes `f7b396110d` (CI run `45975183625`) | Flash test after step 0 (SSH start-up is the risk) |
 | OpenSSL 3.5 | ✅ Imported and wired in (`d2a52749e2`, `2bae6f2d09`), **off** | Turn on `OPENSSL35=y` in a branch once the baseline is green |
 | Blue Cave openssl10 shim | ✅ Written `9bdc2e04ee` (36 symbols + `make check` for 151) | Compiles only with OPENSSL35. Then disassembly spot-check of the cfg_*/libvpn macros |
 | Private OpenSSL 1.0.2u for Lantiq hostapd/wpa_supplicant | ⏳ Not started | Launch path: `fapi_wlan_wave_lib_common.sh` does `cp -s ${BINDIR}/hostapd /tmp/hostapd_<radio>` (a symlink), so use DT_RUNPATH on the binary or a wrapper at `${BINDIR}` |
