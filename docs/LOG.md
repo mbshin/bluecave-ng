@@ -53,6 +53,7 @@
 | 17:44 | User decisions: **force-push OK**, **retry step 0 through the AiMesh upload**, **physical access to the Blue Cave: yes**. Node pre-check: still 384_32948, no `/tmp/linux.trx`, 367 MB free RAM, `upgrade_fw_status=4`, `webs_state_error=1`. Started a watcher (`out/step0-attempt2-174457.log`) |
 | 17:45–18:05 | Rewrote the two commits in a bare clone (trees identical): `323c076cdc`→`9bdc2e04ee`, `f543003ea0`→`10681c21c6`. The HTTPS push from the scratch clone hung for about 20 minutes waiting for credentials. Killed it and **force-pushed through `src/`'s SSH remote** with `--force-with-lease`. `bluecave-ng` = `10681c21c6` |
 | 17:53 | Step 0 attempt 2: no upload had reached the node yet |
+| 17:56 | **CI run `45966381209` green**: first `bluecave-ng` firmware (dropbear 2026.94, OpenSSL 1.0 default). `3.0.0.4_BLUECAVE_R5.2.9_30001-gf543003.trx` 36,294,656 B, HDR0/XRX500/BLUECAVE, sha256 `3516d6d8394d3463999466a0101c230c0a902d9af1e7d36a5ae487ade5c58802`. Saved to `out/ci/45966381209/` |
 
 ## Changes made outside this repo
 

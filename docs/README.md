@@ -27,7 +27,7 @@ Custom, maintained firmware for the end-of-life **ASUS Blue Cave** (Intel GRX350
 | Project docs/scripts | **Public**: <https://github.com/mbshin/bluecave-ng> (private details redacted) |
 | OpenSSL-linked prebuilt scan | **Done**: 52 blobs on 1.0.0 (incl. Wi-Fi hostapd/wpa_supplicant, AiMesh cfg_*), 308 symbols. See OPENSSL-ABI.md |
 | OpenSSL 3.5 | Imported and wired in (commits `d2a52749e` + `2bae6f2d0`, pushed), **not turned on yet**. Needs shim extension (230 forwards + 35 implementations) and a private 1.0.2u for Wi-Fi |
-| dropbear | **2026.94** (commits `9923cbafb`, `10681c21c6`, pushed). CI build in progress |
+| dropbear | **2026.94** (commits `9923cbafb`, `10681c21c6`, pushed). CI build green (run `45966381209`) |
 | Merlin port | Not started. Base: Merlin `384.14_x` |
 
 ## Key facts

@@ -20,7 +20,7 @@ ASUS stopped updating the Blue Cave in 2021 (last release `3.0.0.4.384.46630`). 
 | Research, hardware survey, NAND layout | ✅ Done ([RESEARCH](docs/RESEARCH.md), [ROUTER](docs/ROUTER.md)) |
 | Docker build environment (Apple Silicon and x86) | ✅ Done ([BUILD](docs/BUILD.md)) |
 | Baseline build of SWRT 5.2.9 | 🔄 In progress |
-| **dropbear 2019.78 → 2026.94** | ✅ Imported, link fix done, CI build in progress (baseline SWRT builds green) |
+| **dropbear 2019.78 → 2026.94** | ✅ Imported, builds on CI (run `45966381209`), not flashed yet |
 | **OpenSSL 1.0.2u → 3.5.9** | 🔄 Imported and wired in, not turned on yet. 52 prebuilt blobs need a compatibility layer ([OPENSSL-ABI](docs/OPENSSL-ABI.md)) |
 | dnsmasq, curl, miniupnpd, zlib, … | ⏳ Planned ([PACKAGES](docs/PACKAGES.md)) |
 | Merlin web UI / rc features (from Merlin `384.14_x`) | ⏳ Planned |

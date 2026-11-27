@@ -8,16 +8,16 @@ Snapshot for whoever picks this up next (human or agent). Read this first, then 
 - **Step 0** (official ASUS `384.46630` through the main router's AiMesh *Manual firmware update → Upload*) was **attempted and didn't apply**. The image started arriving on the node (`/tmp/linux.trx` reached 21.3 of 34.7 MB at 05:58), then was discarded. No flash, no reboot. **Likely cause:** the main router's web session dropped mid-transfer (new login at 05:59:11). Not proven. The EBG15 log has no node-upgrade entries. Node flags afterwards: `upgrade_fw_status=4`, `webs_state_error=1` (meaning unknown).
 - **Step 0 attempt 2** is ready. The node was checked at 17:44 (clean, 367 MB free) and a watcher logs to `out/step0-attempt2-174457.log`. **As of 17:53 nothing had been uploaded.**
 - **Firmware source:** `mbshin/bluecave-asuswrt@bluecave-ng` (head `10681c21c6`) has dropbear 2026.94, OpenSSL 3.5 (off) and the Blue Cave OpenSSL 1.0 shim.
-- **CI:** the unchanged SWRT 5.2.9 `master` **builds green** (run `45895088817`, artifact `bluecave-993adeb230`). `bluecave-ng` failed at the dropbear link (ASUS hooks missing from SWRT). Fixed in `10681c21c6`, and run `45966381209` (built from the pre-rewrite ID `f543003ea0`, same tree) is in progress.
+- **CI:** the unchanged SWRT 5.2.9 `master` **builds green** (run `45895088817`, artifact `bluecave-993adeb230`). `bluecave-ng` failed at the dropbear link (ASUS hooks missing from SWRT). Fixed in `10681c21c6`. **Run `45966381209` is green** (built from the pre-rewrite ID `f543003ea0`, same tree): `3.0.0.4_BLUECAVE_R5.2.9_30001-gf543003.trx`, 36.3 MB, HDR0/XRX500/BLUECAVE, sha256 `3516d6d8…c58802`, in `out/ci/45966381209/`. **Not flashed. Do step 0 first.**
 
 ## State of each workstream
 
 | Workstream | State | Next action |
 |---|---|---|
 | Step 0: official ASUS 384.46630 on the node | ❌ Attempt 1 didn't apply. ⏳ Attempt 2 waiting for the user's upload | Retry the AiMesh upload and **keep the main router page open and logged in until the node reboots** (~10 min). Watch `/tmp/linux.trx` on the node over SSH. Fallback (needs user OK): flash on the node over SSH with the same verified `.trx` |
-| CI firmware build | ✅ Baseline `master` green. 🔄 `bluecave-ng` run `45966381209` after the dropbear link fix `10681c21c6` | Check `gh run list -R mbshin/bluecave-ng`. If red, `gh run download` the build log and grep `] Error` without `ignored` |
+| CI firmware build | ✅ Baseline `master` green. ✅ `bluecave-ng` green (run `45966381209`, after the dropbear link fix `10681c21c6`) | Check `gh run list -R mbshin/bluecave-ng`. If red, `gh run download` the build log and grep `] Error` without `ignored` |
 | Local Mac build | ⏹ Stopped (it used the old image without libltdl, so it would fail) | Optional: `scripts/build.sh image && scripts/build.sh build` (slow under emulation; CI is preferred) |
-| dropbear 2026.94 + `rc/ssh.c` | ✅ Committed `9923cbafb5`, link fix `10681c21c6` | Needs a green CI build |
+| dropbear 2026.94 + `rc/ssh.c` | ✅ Committed `9923cbafb5`, link fix `10681c21c6`, **builds** | Flash test after step 0 (SSH start-up is the risk) |
 | OpenSSL 3.5 | ✅ Imported and wired in (`d2a52749e2`, `2bae6f2d09`), **off** | Turn on `OPENSSL35=y` in a branch once the baseline is green |
 | Blue Cave openssl10 shim | ✅ Written `9bdc2e04ee` (36 symbols + `make check` for 151) | Compiles only with OPENSSL35. Then disassembly spot-check of the cfg_*/libvpn macros |
 | Private OpenSSL 1.0.2u for Lantiq hostapd/wpa_supplicant | ⏳ Not started | Launch path: `fapi_wlan_wave_lib_common.sh` does `cp -s ${BINDIR}/hostapd /tmp/hostapd_<radio>` (a symlink), so use DT_RUNPATH on the binary or a wrapper at `${BINDIR}` |
