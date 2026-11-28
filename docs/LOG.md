@@ -62,6 +62,11 @@
 | 18:40 | Explained to the user that the custom firmware isn't finished (OpenSSL 3.5 off), and recommended not flashing yet |
 | 18:45 | **Independent review by Codex** (read-only, isolated bundle, no private data): don't flash yet. See [REVIEW-STEP1.md](REVIEW-STEP1.md). Redacted the LAN IP I had added to HANDOFF.md (`5fa2a70`; still in earlier commits of the public history) |
 | 18:50 | **Commit `f7b396110d`** (`rc/ssh.c`): an invalid port falls back to 22 rather than turning SSH off; nvram RSA/ECDSA host keys are migrated (chmod 0600); key generation and symlink results are checked, with a fallback to RAM; fixed `f_size()==-1` being treated as present. CI run `45975183625` |
+| 18:55 | OpenSSL 3.5 branch `bluecave-ng-ossl35`: `OPENSSL35=y` in the BLUECAVE flags (`9e865d9d14`). CI run `45975743475` was green **but built OpenSSL 1.0**: the log said `.config:320: trying to assign nonexistent symbol RTCONFIG_OPENSSL35`. Added the Kconfig choice (`b06e8905b2`), reran as `45980552818` |
+| 19:04 | **Trial-boot rehearsal, first half** (user approved): `uboot_env --set --name update_chk --value 3`, read back, reboot. The node came up on **bank A** (`rootfsA`, official `384_32948`), U-Boot had saved `update_chk=2`, back in the mesh. It got a **new DHCP address** (found by ARP sweep for its MAC). 384_32948 has no `uboot_env` binary |
+| 2026-11-28 | User power-cycled the node (uptime 1 day 1 h at the next check) |
+| 2026-11-29 | **Trial-boot rehearsal, second half verified:** node on **bank B** (`rootfsB`, `active_bank=B`), official `384_46630-g3e43ad7`, `update_chk=2`, `re_mode=1`, `sw_mode=3`, `cfg_client`/`amas_wlcconnect` running, reachable over the wireless backhaul (`wlc0_ssid` set). `wlc*_state` reads 0 after a day of uptime (it read 2 right after step 0), so don't use it alone as the backhaul check. **The one-shot fallback works as documented** |
+| 2026-11-29 | CI `45980552818` (real OpenSSL 3.5 build) **failed only at the shim check**: OpenSSL 3.5 itself built and installed. `openssl10-compat` was missing `SSLv3_method`/`SSLv3_server_method` (ssl3-method is off by default in 3.x). **Commit `16f7201223`** maps them to the TLS methods. CI run `46179228879` |
 
 ## Changes made outside this repo
 

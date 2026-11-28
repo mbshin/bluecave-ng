@@ -1,4 +1,4 @@
-# Handoff — 2026-11-27 18:15 KST
+# Handoff — 2026-11-29
 
 Snapshot for whoever picks this up next (human or agent). Read this first, then [PLAN.md](PLAN.md) and [LOG.md](LOG.md).
 
@@ -6,6 +6,8 @@ Snapshot for whoever picks this up next (human or agent). Read this first, then 
 
 - **Device:** one ASUS Blue Cave, a **wireless leaf AiMesh node** under an ExpertWiFi EBG15. **Now on official ASUS `3.0.0.4.384_46630-g3e43ad7`** (step 0 done 2026-11-27 18:10), back in the mesh. No custom image has been flashed.
 - **Step 0 done** (attempt 2). Uploaded through EBG15 → Administration → Firmware Upgrade → BLUE CAVE → Upload, with the page kept open. The node received all 34,717,696 B at 18:09:49, shut down its services, rebooted at 18:10:37 and was back on `384_46630` at 18:13 (`re_mode=1`, `wlc_state=2` on both radios, same IP, AiMesh daemons running). Attempt 1 at 05:58 had stalled at 21.3 MB, most likely because the EBG15 session dropped. Log: `out/step0-attempt2b-*.log`.
+- **Bank fallback rehearsed** (2026-11-27/29): `update_chk=3` booted bank A (official 384_32948) once, a power cycle brought it back to bank B (384_46630). So a custom image can be trialled with **one power cycle as the way back**. See [FLASHING.md](FLASHING.md) "Upgrade path and bank fallback".
+- **OpenSSL 3.5:** branch `bluecave-ng-ossl35` now really builds OpenSSL 3.5 (needed a Kconfig symbol, `b06e8905b2`). Last failure was only the shim's symbol check (SSLv3 methods), fixed in `16f7201223`; CI run `46179228879`.
 - **Firmware source:** `mbshin/bluecave-asuswrt@bluecave-ng` (head `10681c21c6`) has dropbear 2026.94, OpenSSL 3.5 (off) and the Blue Cave OpenSSL 1.0 shim.
 - **CI:** the unchanged SWRT 5.2.9 `master` **builds green** (run `45895088817`, artifact `bluecave-993adeb230`). `bluecave-ng` failed at the dropbear link (ASUS hooks missing from SWRT). Fixed in `10681c21c6`. **Run `45966381209` is green** (built from the pre-rewrite ID `f543003ea0`, same tree): `3.0.0.4_BLUECAVE_R5.2.9_30001-gf543003.trx`, 36.3 MB, HDR0/XRX500/BLUECAVE, sha256 `3516d6d8…c58802`, in `out/ci/45966381209/`. **Not flashed. Do step 0 first.**
 
@@ -17,7 +19,7 @@ Snapshot for whoever picks this up next (human or agent). Read this first, then 
 | CI firmware build | ✅ Baseline `master` green. ✅ `bluecave-ng` green (run `45966381209`, after the dropbear link fix `10681c21c6`) | Check `gh run list -R mbshin/bluecave-ng`. If red, `gh run download` the build log and grep `] Error` without `ignored` |
 | Local Mac build | ⏹ Stopped (it used the old image without libltdl, so it would fail) | Optional: `scripts/build.sh image && scripts/build.sh build` (slow under emulation; CI is preferred) |
 | dropbear 2026.94 + `rc/ssh.c` | ✅ Committed `9923cbafb5`, link fix `10681c21c6`, review fixes `f7b396110d` (CI run `45975183625`) | Flash test after step 0 (SSH start-up is the risk) |
-| OpenSSL 3.5 | ✅ Imported and wired in (`d2a52749e2`, `2bae6f2d09`), **off** | Turn on `OPENSSL35=y` in a branch once the baseline is green |
+| OpenSSL 3.5 | ✅ Imported, wired in, **on** in branch `bluecave-ng-ossl35` (`9e865d9d14`, Kconfig `b06e8905b2`, shim fix `16f7201223`) | Check CI `46179228879`. Verify the log builds `openssl-3.5` and `openssl10-compat: all … required symbols resolvable` |
 | Blue Cave openssl10 shim | ✅ Written `9bdc2e04ee` (36 symbols + `make check` for 151) | Compiles only with OPENSSL35. Then disassembly spot-check of the cfg_*/libvpn macros |
 | Private OpenSSL 1.0.2u for Lantiq hostapd/wpa_supplicant | ⏳ Not started | Launch path: `fapi_wlan_wave_lib_common.sh` does `cp -s ${BINDIR}/hostapd /tmp/hostapd_<radio>` (a symlink), so use DT_RUNPATH on the binary or a wrapper at `${BINDIR}` |
 | dnsmasq / curl / miniupnpd / zlib / openvpn | ⏳ Planned | [PACKAGES.md](PACKAGES.md) |
@@ -59,7 +61,9 @@ Snapshot for whoever picks this up next (human or agent). Read this first, then 
 - Pushing from a scratch HTTPS clone hangs waiting for credentials. Push through `src/` (SSH remote): `git fetch <bare> <branch>` then `git push --force-with-lease=... origin FETCH_HEAD:refs/heads/<branch>`.
 - Merlin packages may call ASUS functions that SWRT 5.2.9 lacks (`IS_PTCSRV_LOCKED`, `asus_openssl_crypt`). Gate them, don't stub them.
 
-- `release/src-lantiq/Makefile` is a **symlink** to `../src-rt/Makefile`.
+- `release/src-lantiq/Makefile` and `target.mak` are **symlinks** into `../src-rt/`. `sed -i` on the symlink fails; edit the real file.
+- Kconfig **silently drops** undeclared symbols (`.config: trying to assign nonexistent symbol`), and the build still goes green. After a config change, grep the build log for the package you meant to build.
+- The node's IP is **DHCP** and can change on reboot. Find it with a ping sweep plus `arp -an` for its MAC (`private/NETWORK.md`).
 - Upstream packages bring **test private keys**, and GitHub push protection blocks them. Strip `*.pem`/`*.key` that contain `PRIVATE KEY` before committing.
 - History rewrites in the fork: do them in a **bare clone** (the macOS worktree has case collisions).
 - `docker ps --filter ancestor=` misses containers after the image is rebuilt. The build container is named **`bluecave-builder`**.
